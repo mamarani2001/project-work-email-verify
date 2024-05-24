@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from app.forms import *
 from django.http import HttpResponse
-from  django.core.mail import send_mail
+from django.core.mail import send_mail
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+
 # Create your views here.
 
 def register(request):
@@ -31,3 +34,22 @@ def register(request):
             return HttpResponse('registration is Done')
         return HttpResponse('Invalid Data')
     return render(request, 'register.html', d)
+
+
+
+
+def user_login(request):
+
+    if request.method == 'POST':
+        un=request.POST.get('un')
+        pw=request.POST.get('pw')
+        AUO=authenticate(username=un,password=pw)
+        if AUO:
+            login(request,AUO)
+            d={'AUO':AUO}
+            return render(request,'home.html',d)
+        return HttpResponse('Invalid credential')
+    return render(request,'user_login.html')
+
+def home(request):
+    return render(request,'home.html')
